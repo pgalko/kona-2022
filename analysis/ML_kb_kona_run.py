@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import gaussian_kde
 
 from sklearn import ensemble
 from sklearn.metrics import mean_squared_error
@@ -49,12 +50,20 @@ print('Core Temp Correlation: {}'.format(corr[0,1]))
 print('Core Temp RMSE: {}'.format(rmse))
 print('Core MAPE: {} %'.format( mape*100))
 
-# plot the results
+# plot the actual core temperature vs the predicted core temperature
 fig, ax = plt.subplots()
 plt.scatter(data_test['core_temperature'], yhat,alpha=0.5)
 ax.plot([min(data_test['core_temperature']), max(data_test['core_temperature'])], [min(data_test['core_temperature']), max(df['core_temperature'])], 'k--', lw=1)
 plt.xlabel('Actual Core Temp')
 plt.ylabel('Predicted Core Temp')
+# plot density on the right y axes
+ax2 = plt.twinx()
+density = gaussian_kde(data_test['core_temperature'])
+xs = np.linspace(min(data_test['core_temperature']), max(data_test['core_temperature']), 200)
+density.covariance_factor = lambda : .25
+density._compute_covariance()
+ax2.plot(xs,density(xs)*120,linewidth=1, color='grey', alpha=1, linestyle='--')
+ax2.set_ylabel('Density')
 plt.title('Actual Core Temp vs Predicted Core Temp')
 plt.show()
 
