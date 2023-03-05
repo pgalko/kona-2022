@@ -54,6 +54,11 @@ print('Core MAPE: {} %'.format( mape*100))
 fig, ax = plt.subplots()
 plt.scatter(data_test['core_temperature'], yhat,alpha=0.5)
 ax.plot([min(data_test['core_temperature']), max(data_test['core_temperature'])], [min(data_test['core_temperature']), max(df['core_temperature'])], 'k--', lw=1)
+# plot line of best fit
+z = np.polyfit(data_test['core_temperature'], yhat, 1)
+p = np.poly1d(z)
+plt.plot(data_test['core_temperature'],p(data_test['core_temperature']),"r--")
+#set x left y axes labels
 plt.xlabel('Actual Core Temp')
 plt.ylabel('Predicted Core Temp')
 # plot density on the right y axes
@@ -63,6 +68,7 @@ xs = np.linspace(min(data_test['core_temperature']), max(data_test['core_tempera
 density.covariance_factor = lambda : .25
 density._compute_covariance()
 ax2.plot(xs,density(xs)*120,linewidth=1, color='grey', alpha=1, linestyle='--')
+# set right y axes label
 ax2.set_ylabel('Density')
 plt.title('Actual Core Temp vs Predicted Core Temp')
 plt.show()
